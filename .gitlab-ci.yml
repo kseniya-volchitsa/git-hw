@@ -3,5 +3,7 @@ stages:
 
 test_job:
   stage: test
+  tags:
+    - shell
   script:
     - echo "Hello, GitLab CI!"
