@@ -3,5 +3,7 @@ stages:
 
 test_job:
   stage: test
+  tags:
+    - docker
   script:
     - echo "Hello, GitLab CI!"
