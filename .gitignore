@@ -3,3 +3,5 @@
 
 # игнорировать всю директорию cache
 cache/
+build.log
+*.tar.gz
