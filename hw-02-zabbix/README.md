@@ -8,10 +8,6 @@
 
 **Скриншот авторизации в админке:**
 
-### Задание 1. Установка Zabbix Server с веб-интерфейсом
-
-**Скриншот авторизации в админке:**
-
 ![Авторизация в Zabbix](img/zabbix-login.png)
 
 ### Задание 2. Установка Zabbix Agent на два хоста
@@ -29,3 +25,9 @@
 ![Latest Data - Zabbix Server](img/zabbix-latest-data-zabbix-server.png)
 
 ![Latest Data - Debian Local](img/zabbix-latest-data-debian_local.png)
+
+### Задание 3*. Установка Zabbix Agent на Windows
+
+**Скриншот раздела Latest Data со свободным местом на диске C:**
+
+![Latest Data - Windows](img/zabbix-latest-data-windows.png)
