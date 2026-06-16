@@ -1,0 +1,15 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "agent1" do |agent1|
+    agent1.vm.box = "debian/bookworm64"
+    agent1.vm.hostname = "volchitsaka-1"
+    agent1.vm.network "private_network", ip: "192.168.56.11"
+    agent1.vm.provision "shell", path: "zabbix-agent.sh"
+  end
+
+  config.vm.define "agent2" do |agent2|
+    agent2.vm.box = "debian/bookworm64"
+    agent2.vm.hostname = "volchitsaka-2"
+    agent2.vm.network "private_network", ip: "192.168.56.12"
+    agent2.vm.provision "shell", path: "zabbix-agent.sh"
+  end
+end
