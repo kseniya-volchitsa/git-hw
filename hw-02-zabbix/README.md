@@ -8,75 +8,24 @@
 
 **Скриншот авторизации в админке:**
 
+### Задание 1. Установка Zabbix Server с веб-интерфейсом
+
+**Скриншот авторизации в админке:**
+
 ![Авторизация в Zabbix](img/zabbix-login.png)
 
-**Использованные команды:**
+### Задание 2. Установка Zabbix Agent на два хоста
 
-```bash
-# Установка PostgreSQL
-sudo apt update
-sudo apt install postgresql postgresql-contrib -y
+**Скриншот раздела Configuration > Hosts:**
 
-# Установка Docker и Docker Compose
-sudo apt install docker.io docker-compose -y
+![Configuration > Hosts](img/zabbix-hosts.png)
 
-# Создание директории и файла docker-compose.yml
-mkdir -p ~/zabbix-docker && cd ~/zabbix-docker
-cat > docker-compose.yml <<'EOL'
-version: '3.8'
+**Скриншот лога zabbix agent:**
 
-services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: zabbix-postgres
-    environment:
-      POSTGRES_USER: zabbix
-      POSTGRES_PASSWORD: zabbix
-      POSTGRES_DB: zabbix
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - zabbix-net
+![Лог Zabbix Agent](img/zabbix-agent-log.png)
 
-  zabbix-server:
-    image: zabbix/zabbix-server-pgsql:alpine-7.2-latest
-    container_name: zabbix-server
-    environment:
-      DB_SERVER_HOST: postgres
-      POSTGRES_USER: zabbix
-      POSTGRES_PASSWORD: zabbix
-      POSTGRES_DB: zabbix
-    ports:
-      - "10051:10051"
-    depends_on:
-      - postgres
-    networks:
-      - zabbix-net
+**Скриншот раздела Monitoring > Latest data:**
 
-  zabbix-web:
-    image: zabbix/zabbix-web-nginx-pgsql:alpine-7.2-latest
-    container_name: zabbix-web
-    environment:
-      DB_SERVER_HOST: postgres
-      POSTGRES_USER: zabbix
-      POSTGRES_PASSWORD: zabbix
-      POSTGRES_DB: zabbix
-      ZBX_SERVER_HOST: zabbix-server
-    ports:
-      - "8081:8080"
-      - "443:8443"
-    depends_on:
-      - zabbix-server
-    networks:
-      - zabbix-net
+![Latest Data - Zabbix Server](img/zabbix-latest-data-zabbix-server.png)
 
-volumes:
-  postgres-data:
-
-networks:
-  zabbix-net:
-    driver: bridge
-EOL
-
-# Запуск Zabbix
-sudo docker-compose up -d
+![Latest Data - Debian Local](img/zabbix-latest-data-debian_local.png)
