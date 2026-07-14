@@ -21,6 +21,7 @@ interface GigabitEthernet0/0
  standby 1 preempt
 end
 write memory
+```
 
 #### Настройка Router1 (BACKUP)
 ```bash
@@ -34,26 +35,29 @@ interface GigabitEthernet0/0
  standby 1 preempt
 end
 write memory
+```
 
-###Результат
+#### Результат
 
     До разрыва кабеля: пинг до виртуального IP 192.168.0.1 идёт, Router0 активен.
 
     После разрыва кабеля: пинг продолжается, Router1 становится активным.
 
-###Скриншоты
+### Скриншоты
 
-    [Router0 (Active) — до разрыва](img/hsrp-router0-active.png)
+1. **Router0 (Active) — до разрыва**  
+    ![Router0 (Active) — до разрыва](hsrp-router0-active.png)
+2. **Router1 (Standby) — до разрыва** 
+    ![Router1 (Standby) — до разрыва](img/hsrp-router1-standby.png)
+3. **Router1 (Active) — после разрыва**
+    ![Router1 (Active) — после разрыва](img/hsrp-router1-active.png)
+4. **Пинг до разрыва**
+    ![Пинг до разрыва](img/ping-before.png)
+5. **Пинг после разрыва**
+    ![Пинг после разрыва](img/ping-after.png)
 
-    [Router1 (Standby) — до разрыва](img/hsrp-router1-standby.png)
-
-    [Router1 (Active) — после разрыва](img/hsrp-router1-active.png)
-
-    [Пинг до разрыва](img/ping-before.png)
-
-    [Пинг после разрыва](img/ping-after.png)
-
-Файл схемы: hsrp_advanced.pkt
+6. **Файл схемы:**
+   ![Файл схемы](hsrp_advanced.pkt)
 
 ## Задание 2. Keepalived и веб-сервер на двух ВМ
 
@@ -73,3 +77,125 @@ write memory
 
 3. **Логи Keepalived на BACKUP (переключение):**  
    ![BACKUP Logs](img/backup_logs.png)
+
+### MASTER (debian-vm1) — /etc/keepalived/keepalived.conf:
+```
+vrrp_script chk_web {
+    script "/usr/local/bin/check_web.sh"
+    interval 3
+    weight -20
+}
+
+vrrp_instance VI_1 {
+    interface enp1s0
+    state MASTER
+    virtual_router_id 51
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1234
+    }
+    virtual_ipaddress {
+        192.168.122.100/24
+    }
+    track_script {
+        chk_web
+    }
+}
+```
+
+### BACKUP (debian-vm2) — /etc/keepalived/keepalived.conf:
+```
+vrrp_script chk_web {
+    script "/usr/local/bin/check_web.sh"
+    interval 3
+    weight -20
+}
+
+vrrp_instance VI_1 {
+    interface enp1s0
+    state BACKUP
+    virtual_router_id 51
+    priority 90
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1234
+    }
+    virtual_ipaddress {
+        192.168.122.100/24
+    }
+    track_script {
+        chk_web
+    }
+}
+```
+### Скрипт проверки веб-сервера (/usr/local/bin/check_web.sh)
+```
+#!/bin/bash
+nc -z -w 1 localhost 80 && [ -f /var/www/html/index.html ]
+```
+
+### Результат
+
+    - Виртуальный IP переходит на BACKUP при остановке nginx на MASTER.
+
+    - При восстановлении MASTER виртуальный IP возвращается обратно.
+
+### Задание 3* (со звёздочкой). Отслеживание нагрузки через vrrp_track_file
+
+#### Цель
+Настроить Keepalived так, чтобы виртуальный IP автоматически переходил на сервер с наименьшей нагрузкой (Load Average).
+
+#### Реализация
+
+**1. Скрипт для расчёта приоритета (`/usr/local/bin/calc_priority.sh`):**
+
+```bash
+#!/bin/bash
+PRIORITY_FILE="/var/run/keepalived/priority.conf"
+BASE_PRIORITY=100
+LOAD=$(uptime | awk -F'load average:' '{print $2}' | cut -d, -f1 | xargs)
+LOAD_INT=$(echo "$LOAD * 10" | bc | cut -d. -f1)
+if [ -z "$LOAD_INT" ] || [ "$LOAD_INT" -eq 0 ]; then LOAD_INT=1; fi
+NEW_PRIORITY=$((BASE_PRIORITY - LOAD_INT))
+if [ $NEW_PRIORITY -lt 50 ]; then NEW_PRIORITY=50; elif [ $NEW_PRIORITY -gt 150 ]; then NEW_PRIORITY=150; fi
+echo "$NEW_PRIORITY" > $PRIORITY_FILE
+```
+
+**2. Cron для автоматического обновления:**
+
+```bash
+* * * * * /usr/local/bin/calc_priority.sh
+```
+
+**3. Конфигурация Keepalived с `vrrp_track_file`:**
+
+```bash
+vrrp_track_file priority_file {
+    file "/var/run/keepalived/priority.conf"
+    weight 30
+}
+
+vrrp_instance VI_1 {
+    ...
+    track_file {
+        priority_file
+    }
+}
+```
+
+#### Результат
+
+- При повышении нагрузки на MASTER его приоритет снижается.
+- Виртуальный IP переходит на BACKUP с более высоким приоритетом.
+- При снижении нагрузки MASTER возвращает себе IP.
+
+#### Скриншоты
+
+1. **Приоритет на MASTER до нагрузки:**  
+   ![Priority Before](img/priority_before.png)
+
+2. **Приоритет на MASTER во время нагрузки:**  
+   ![Priority During](img/priority_after.png)
