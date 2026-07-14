@@ -46,7 +46,7 @@ write memory
 ### Скриншоты
 
 1. **Router0 (Active) — до разрыва**  
-    ![Router0 (Active) — до разрыва](img/hsrp-router0-active.png)
+    ![Router0 (Active) — до разрыва](hsrp-router0-active.png)
 2. **Router1 (Standby) — до разрыва** 
     ![Router1 (Standby) — до разрыва](img/hsrp-router1-standby.png)
 3. **Router1 (Active) — после разрыва**
