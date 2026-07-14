@@ -143,3 +143,59 @@ nc -z -w 1 localhost 80 && [ -f /var/www/html/index.html ]
 
     - При восстановлении MASTER виртуальный IP возвращается обратно.
 
+### Задание 3* (со звёздочкой). Отслеживание нагрузки через vrrp_track_file
+
+#### Цель
+Настроить Keepalived так, чтобы виртуальный IP автоматически переходил на сервер с наименьшей нагрузкой (Load Average).
+
+#### Реализация
+
+**1. Скрипт для расчёта приоритета (`/usr/local/bin/calc_priority.sh`):**
+
+```bash
+#!/bin/bash
+PRIORITY_FILE="/var/run/keepalived/priority.conf"
+BASE_PRIORITY=100
+LOAD=$(uptime | awk -F'load average:' '{print $2}' | cut -d, -f1 | xargs)
+LOAD_INT=$(echo "$LOAD * 10" | bc | cut -d. -f1)
+if [ -z "$LOAD_INT" ] || [ "$LOAD_INT" -eq 0 ]; then LOAD_INT=1; fi
+NEW_PRIORITY=$((BASE_PRIORITY - LOAD_INT))
+if [ $NEW_PRIORITY -lt 50 ]; then NEW_PRIORITY=50; elif [ $NEW_PRIORITY -gt 150 ]; then NEW_PRIORITY=150; fi
+echo "$NEW_PRIORITY" > $PRIORITY_FILE
+```
+
+**2. Cron для автоматического обновления:**
+
+```bash
+* * * * * /usr/local/bin/calc_priority.sh
+```
+
+**3. Конфигурация Keepalived с `vrrp_track_file`:**
+
+```bash
+vrrp_track_file priority_file {
+    file "/var/run/keepalived/priority.conf"
+    weight 30
+}
+
+vrrp_instance VI_1 {
+    ...
+    track_file {
+        priority_file
+    }
+}
+```
+
+#### Результат
+
+- При повышении нагрузки на MASTER его приоритет снижается.
+- Виртуальный IP переходит на BACKUP с более высоким приоритетом.
+- При снижении нагрузки MASTER возвращает себе IP.
+
+#### Скриншоты
+
+1. **Приоритет на MASTER до нагрузки:**  
+   ![Priority Before](img/priority_before.png)
+
+2. **Приоритет на MASTER во время нагрузки:**  
+   ![Priority During](img/priority_after.png)
