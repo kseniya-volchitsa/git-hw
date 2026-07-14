@@ -45,15 +45,16 @@ write memory
 
 ### Скриншоты
 
-    ![Router0 (Active) — до разрыва](hsrp-router0-active.png)
-
-    ![Router1 (Standby) — до разрыва](hsrp-router1-standby.png)
-
-    ![Router1 (Active) — после разрыва](hsrp-router1-active.png)
-
-    ![Пинг до разрыва](ping-before.png)
-
-    ![Пинг после разрыва](ping-after.png)
+1. **Router0 (Active) — до разрыва**  
+    ![Router0 (Active) — до разрыва](img/hsrp-router0-active.png)
+2. **Router1 (Standby) — до разрыва** 
+    ![Router1 (Standby) — до разрыва](img/hsrp-router1-standby.png)
+3. **Router1 (Active) — после разрыва**
+    ![Router1 (Active) — после разрыва](img/hsrp-router1-active.png)
+4. **Пинг до разрыва**
+    ![Пинг до разрыва](img/ping-before.png)
+5. **Пинг после разрыва**
+    ![Пинг после разрыва](img/ping-after.png)
 
 Файл схемы: hsrp_advanced.pkt
 
