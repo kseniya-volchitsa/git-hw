@@ -77,3 +77,69 @@ write memory
 
 3. **Логи Keepalived на BACKUP (переключение):**  
    ![BACKUP Logs](img/backup_logs.png)
+
+### MASTER (debian-vm1) — /etc/keepalived/keepalived.conf:
+```
+vrrp_script chk_web {
+    script "/usr/local/bin/check_web.sh"
+    interval 3
+    weight -20
+}
+
+vrrp_instance VI_1 {
+    interface enp1s0
+    state MASTER
+    virtual_router_id 51
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1234
+    }
+    virtual_ipaddress {
+        192.168.122.100/24
+    }
+    track_script {
+        chk_web
+    }
+}
+```
+
+### BACKUP (debian-vm2) — /etc/keepalived/keepalived.conf:
+```
+vrrp_script chk_web {
+    script "/usr/local/bin/check_web.sh"
+    interval 3
+    weight -20
+}
+
+vrrp_instance VI_1 {
+    interface enp1s0
+    state BACKUP
+    virtual_router_id 51
+    priority 90
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1234
+    }
+    virtual_ipaddress {
+        192.168.122.100/24
+    }
+    track_script {
+        chk_web
+    }
+}
+```
+### Скрипт проверки веб-сервера (/usr/local/bin/check_web.sh)
+```
+#!/bin/bash
+nc -z -w 1 localhost 80 && [ -f /var/www/html/index.html ]
+```
+
+### Результат
+
+    - Виртуальный IP переходит на BACKUP при остановке nginx на MASTER.
+
+    - При восстановлении MASTER виртуальный IP возвращается обратно.
+
