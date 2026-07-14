@@ -21,6 +21,7 @@ interface GigabitEthernet0/0
  standby 1 preempt
 end
 write memory
+```
 
 #### Настройка Router1 (BACKUP)
 ```bash
@@ -34,6 +35,7 @@ interface GigabitEthernet0/0
  standby 1 preempt
 end
 write memory
+```
 
 #### Результат
 
