@@ -56,7 +56,8 @@ write memory
 5. **Пинг после разрыва**
     ![Пинг после разрыва](img/ping-after.png)
 
-Файл схемы: hsrp_advanced.pkt
+6. **Файл схемы:**
+   ![Файл схемы](hsrp_advanced.pkt)
 
 ## Задание 2. Keepalived и веб-сервер на двух ВМ
 
