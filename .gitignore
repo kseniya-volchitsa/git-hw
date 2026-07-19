@@ -5,3 +5,18 @@
 cache/
 build.log
 *.tar.gz
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+# Yandex Cloud keys
+key.json
+*.key.json
+
+# Local .terraform directories
+**/.terraform/*
