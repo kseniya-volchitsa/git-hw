@@ -184,6 +184,9 @@ filebeat.inputs:
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]
   index: "filebeat-nginx-%{+YYYY.MM.dd}"
+
+setup.template.name: "filebeat-nginx"
+setup.template.pattern: "filebeat-nginx-*"
 ```
 
 **Запуск:**
