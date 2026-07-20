@@ -210,10 +210,8 @@ curl localhost
 
 ```yaml
 filebeat.inputs:
-- type: log
+- type: journald
   enabled: true
-  paths:
-    - /var/log/syslog
 
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]
