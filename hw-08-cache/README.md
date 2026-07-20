@@ -30,7 +30,7 @@ sudo systemctl enable memcached
 
 **Скриншот `systemctl status memcached`:**
 
-![Memcached status](img/memcached-status.png)
+![Memcached status](memcached-status.png)
 
 ---
 
@@ -58,7 +58,7 @@ get key3
 
 **Скриншот, где видно, что ключи удалились:**
 
-![Memcached TTL](img/memcached-ttl.png)
+![Memcached TTL](memcached-ttl.png)
 
 ---
 
@@ -84,7 +84,7 @@ KEYS *
 
 **Скриншот операции:**
 
-![Redis keys](img/redis-keys.png)
+![Redis keys](redis-keys.png)
 
 ---
 
@@ -101,7 +101,7 @@ GET key5
 
 **Скриншот:**
 
-![Redis numeric](img/redis-numeric.png)
+![Redis numeric](redis-numeric.png)
 
 ---
 
