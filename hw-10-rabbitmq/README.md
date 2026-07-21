@@ -283,7 +283,7 @@ python3 consumer.py
 #### Структура плейбука
 
 ```
-rabbitmq-cluster/
+rabbitmq-ansible/
 ├── inventory.ini # Инвентарный файл с хостами
 ├── group_vars/
 │ └── all.yml # Глобальные переменные для всех хостов
