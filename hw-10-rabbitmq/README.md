@@ -294,7 +294,7 @@ rabbitmq-cluster/
 
 [Полный код group_vars](rabbitmq-ansible/group_vars/all.yaml)
 
-[Полный код rabbitmq-cluster](rabbitmq-cluster.yaml)
+[Полный код rabbitmq-cluster](rabbitmq-ansible/rabbitmq-cluster.yaml)
 
 
 **Скриншот выполнения команды на playbook:**
