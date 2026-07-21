@@ -290,9 +290,9 @@ rabbitmq-cluster/
 ├── rabbitmq-cluster.yml # Основной playbook
 └── README.md # Документация
 ```
-[Полный код inventory](rabbitmq-cluster/inventory.ini)
+[Полный код inventory](rabbitmq-ansible/inventory.ini)
 
-[Полный код group_vars](rabbitmq-cluster/group_vars/all.yaml)
+[Полный код group_vars](rabbitmq-ansible/group_vars/all.yaml)
 
 [Полный код rabbitmq-cluster](rabbitmq-cluster.yaml)
 
