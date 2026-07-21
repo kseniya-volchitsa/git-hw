@@ -1,0 +1,88 @@
+---
+- name: Установка и настройка кластера RabbitMQ
+  hosts: all
+  become: yes
+  vars:
+    cluster_master: "rmq01"
+    erlang_cookie: "JDbJ9SShQCBYeS1SbCaESZA4xN/hKMR8pk5cyL9KPnI="  # Одинаковый для всех узлов
+
+  tasks:
+    - name: Установка RabbitMQ сервера
+      apt:
+        name: rabbitmq-server
+        state: present
+      notify: start rabbitmq
+
+    - name: Остановка RabbitMQ для настройки cookie
+      systemd:
+        name: rabbitmq-server
+        state: stopped
+
+    - name: Установка Erlang cookie
+      copy:
+        content: "{{ erlang_cookie }}\n"
+        dest: /var/lib/rabbitmq/.erlang.cookie
+        owner: rabbitmq
+        group: rabbitmq
+        mode: '0400'
+      notify: start rabbitmq
+
+    - name: Включение management плагина
+      rabbitmq_plugin:
+        names: rabbitmq_management
+        state: enabled
+      notify: restart rabbitmq
+
+    - name: Запуск RabbitMQ
+      systemd:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
+
+    - name: Ожидание запуска RabbitMQ
+      wait_for:
+        port: 5672
+        delay: 5
+        timeout: 60
+
+    - name: Остановка приложения для кластеризации
+      command: rabbitmqctl stop_app
+      when: inventory_hostname != cluster_master
+      ignore_errors: yes
+
+    - name: Сброс узла
+      command: rabbitmqctl reset
+      when: inventory_hostname != cluster_master
+      ignore_errors: yes
+
+    - name: Присоединение к кластеру
+      command: "rabbitmqctl join_cluster rabbit@{{ cluster_master }}"
+      when: inventory_hostname != cluster_master
+      ignore_errors: yes
+
+    - name: Запуск приложения
+      command: rabbitmqctl start_app
+      when: inventory_hostname != cluster_master
+      ignore_errors: yes
+
+    - name: Установка политики ha-all
+      rabbitmq_policy:
+        name: ha-all
+        pattern: ".*"
+        tags:
+          ha-mode: all
+          ha-sync-mode: automatic
+        state: present
+      when: inventory_hostname == cluster_master
+
+  handlers:
+    - name: start rabbitmq
+      systemd:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
+
+    - name: restart rabbitmq
+      systemd:
+        name: rabbitmq-server
+        state: restarted

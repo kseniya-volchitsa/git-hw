@@ -1,0 +1,12 @@
+---
+# RabbitMQ cluster configuration
+cluster_master: "rmq01"
+erlang_cookie: "JDbJ9SShQCBYeS1SbCaESZA4xN/hKMR8pk5cyL9KPnI="
+
+# Admin user
+admin_user: "admin"
+admin_password: "secure_password_here"
+admin_vhost: "/"
+
+# RabbitMQ version
+rabbitmq_version: "3.10.8"
