@@ -283,18 +283,18 @@ python3 consumer.py
 #### Структура плейбука
 
 ```
-rabbitmq-cluster/
+rabbitmq-ansible/
 ├── inventory.ini # Инвентарный файл с хостами
 ├── group_vars/
 │ └── all.yml # Глобальные переменные для всех хостов
 ├── rabbitmq-cluster.yml # Основной playbook
 └── README.md # Документация
 ```
-[Полный код inventory](rabbitmq-cluster/inventory.ini)
+[Полный код inventory](rabbitmq-ansible/inventory.ini)
 
-[Полный код group_vars](rabbitmq-cluster/group_vars/all.yaml)
+[Полный код group_vars](rabbitmq-ansible/group_vars/all.yaml)
 
-[Полный код rabbitmq-cluster](rabbitmq-cluster.yaml)
+[Полный код rabbitmq-cluster](rabbitmq-ansible/rabbitmq-cluster.yml)
 
 
 **Скриншот выполнения команды на playbook:**
