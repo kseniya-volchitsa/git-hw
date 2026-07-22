@@ -83,7 +83,7 @@ where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and
 ### Особенности PostgreSQL
 
 1. **Частичные индексы (Partial Index)**
-   ```sql
+```sql
    CREATE INDEX idx_active_customers ON customers(email) WHERE active = true;
 ```
 
