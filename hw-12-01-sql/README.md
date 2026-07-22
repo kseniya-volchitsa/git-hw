@@ -218,4 +218,4 @@ INSERT INTO order_items (order_id, book_id, quantity, unit_price, discount) VALU
 
 ### Скриншот диаграммы в DBeaver 
 
-![Скриншот диаграммы в DBeaver](img/dbeaver_diagram.gif)
+![Скриншот диаграммы в DBeaver](img/bookstore.gif)
