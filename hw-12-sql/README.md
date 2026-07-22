@@ -194,5 +194,5 @@ GRANT SELECT ON sakila.* TO 'sys_temp'@'%';
 FLUSH PRIVILEGES;
 ```
 
-![Проверка прав](/img/mysql_grants_after_revoke.png)
-![Проверка ограничений](/img/mysql_select_insert_update_delete.png)
+![Проверка прав](img/mysql_grants_after_revoke.png)
+![Проверка ограничений](img/mysql_select_insert_update_delete.png)
