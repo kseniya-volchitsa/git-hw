@@ -89,23 +89,20 @@ where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and
 
 2. **Индексы по выражениям (Expression Index)**
 ```sql
-
 CREATE INDEX idx_lower_email ON customers(LOWER(email));
 ```
 
 3. **Индексы с сортировкой**
 ```sql
-
 CREATE INDEX idx_name_desc ON customers(name DESC NULLS LAST);
 ```
 
 4. **Параллельное создание индексов**
 ```sql
-
 CREATE INDEX CONCURRENTLY idx_name ON customers(name);
 ```
 
-Структура проекта
+### Структура проекта
 ```
 hw-12-05-sql/
 ├── README.md
