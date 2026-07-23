@@ -160,6 +160,39 @@ graph TB
 
 **Разделение данных по ключу:**
 
+### Горизонтальный шардинг
+
+```mermaid
+graph TB
+    subgraph "Шард 1 (user_id % 3 = 1)"
+        A1[users]
+        B1[books]
+        C1[stores]
+    end
+    
+    subgraph "Шард 2 (user_id % 3 = 2)"
+        A2[users]
+        B2[books]
+        C2[stores]
+    end
+    
+    subgraph "Шард 3 (user_id % 3 = 0)"
+        A3[users]
+        B3[books]
+        C3[stores]
+    end
+    
+    P[ProxySQL<br/>Шардинг-слой] --> A1
+    P --> B1
+    P --> C1
+    P --> A2
+    P --> B2
+    P --> C2
+    P --> A3
+    P --> B3
+    P --> C3
+```
+
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Горизонтальный шардинг                          │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -193,6 +226,8 @@ graph TB
 
 
 **Схема шардинга**
+
+
 
 ┌──────────────────────────────────────────────────────────────────────┐
 │                            Балансировщик                            │
@@ -237,6 +272,25 @@ graph TB
 | **Master + Multiple Slaves** | Один мастер для записи, много слейвов для чтения | Горизонтальное масштабирование чтения | Сложность синхронизации |
 | **DRBD** (Distributed Replicated Block Device) | Синхронизация на уровне блоков (SAN) | Высокая надёжность, быстрый failover | Дорого, сложно |
 | **SAN-кластер** | Общее хранилище для всех узлов | Простота управления, консистентность | Очень дорого, единая точка отказа |
+
+
+### Схемы работы
+
+**Active Master + Passive Slave:**
+
+```mermaid
+graph LR
+    A[Master<br/>READ/WRITE] -->|Репликация| B[Slave<br/>READ ONLY]
+```
+
+**Master + Multiple Slaves:**
+
+```mermaid
+graph LR
+    A[Master<br/>WRITE] --> B[Slave 1<br/>READ ONLY]
+    A --> C[Slave 2<br/>READ ONLY]
+    A --> D[Slave 3<br/>READ ONLY]
+```
 
 ### Схемы работы
 
