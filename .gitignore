@@ -20,3 +20,5 @@ key.json
 
 # Local .terraform directories
 **/.terraform/*
+hw-12-06-sql/master-data/
+hw-12-06-sql/slave-data/

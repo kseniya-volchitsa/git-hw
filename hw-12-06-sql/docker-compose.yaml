@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysql-master:
+    image: mysql:8.0
+    container_name: mysql-master
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: sakila
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./master-data:/var/lib/mysql
+      - ./master-config:/etc/mysql/conf.d
+    command: --server-id=1 --log-bin=mysql-bin --binlog-format=ROW --binlog-do-db=sakila
+
+  mysql-slave:
+    image: mysql:8.0
+    container_name: mysql-slave
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: sakila
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./slave-data:/var/lib/mysql
+      - ./slave-config:/etc/mysql/conf.d
+    depends_on:
+      - mysql-master
+    command: --server-id=2 --relay-log=relay-bin --read-only=1
