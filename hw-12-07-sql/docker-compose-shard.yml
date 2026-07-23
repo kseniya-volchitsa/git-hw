@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # ProxySQL - шардинг-слой
+  proxysql:
+    image: proxysql/proxysql
+    container_name: proxysql
+    ports:
+      - "6032:6032"  # Администрирование
+      - "6033:6033"  # MySQL протокол
+    volumes:
+      - ./proxysql.cnf:/etc/proxysql.cnf
+      - ./proxysql-data:/var/lib/proxysql
+    depends_on:
+      - shard1-master
+      - shard2-master
+      - shard3-master
+
+  # Шард 1
+  shard1-master:
+    image: mysql:8.0
+    container_name: shard1-master
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./shard1-master-data:/var/lib/mysql
+      - ./shard1-config:/etc/mysql/conf.d
+    command: --server-id=11 --log-bin=mysql-bin
+
+  shard1-slave:
+    image: mysql:8.0
+    container_name: shard1-slave
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./shard1-slave-data:/var/lib/mysql
+      - ./shard1-slave-config:/etc/mysql/conf.d
+    command: --server-id=12 --read-only=1
+
+  # Шард 2
+  shard2-master:
+    image: mysql:8.0
+    container_name: shard2-master
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./shard2-master-data:/var/lib/mysql
+      - ./shard2-config:/etc/mysql/conf.d
+    command: --server-id=21 --log-bin=mysql-bin
+
+  shard2-slave:
+    image: mysql:8.0
+    container_name: shard2-slave
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3310:3306"
+    volumes:
+      - ./shard2-slave-data:/var/lib/mysql
+      - ./shard2-slave-config:/etc/mysql/conf.d
+    command: --server-id=22 --read-only=1
+
+  # Шард 3
+  shard3-master:
+    image: mysql:8.0
+    container_name: shard3-master
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3311:3306"
+    volumes:
+      - ./shard3-master-data:/var/lib/mysql
+      - ./shard3-config:/etc/mysql/conf.d
+    command: --server-id=31 --log-bin=mysql-bin
+
+  shard3-slave:
+    image: mysql:8.0
+    container_name: shard3-slave
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3312:3306"
+    volumes:
+      - ./shard3-slave-data:/var/lib/mysql
+      - ./shard3-slave-config:/etc/mysql/conf.d
+    command: --server-id=32 --read-only=1
