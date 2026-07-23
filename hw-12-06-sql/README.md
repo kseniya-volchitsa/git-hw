@@ -10,6 +10,14 @@
 
 Приложите скриншоты конфигурации, выполнения работы: состояния и режимы работы серверов.
 
+### Схема репликации
+
+```mermaid
+graph TD
+    A[MASTER MySQL<br/>Container: mysql-master<br/>Port: 3307<br/>Server ID: 1<br/>Режим: READ/WRITE<br/>БД: sakila] 
+    -->|Репликация бинарный лог| B[SLAVE MySQL<br/>Container: mysql-slave<br/>Port: 3308<br/>Server ID: 2<br/>Режим: READ ONLY<br/>БД: sakila]
+```
+
 **Схема репликации**
 
 ┌─────────────────────────────────────────────────────────────┐
