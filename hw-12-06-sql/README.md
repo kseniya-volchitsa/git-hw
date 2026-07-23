@@ -67,7 +67,7 @@
 **Проверка работы репликации**
 [Тестовый скрипт](test_1task.sql)
 
-Скриншоты
+### Скриншоты
 
 **Статус Master**
 ![master_status](img/task1_master_status.png)
